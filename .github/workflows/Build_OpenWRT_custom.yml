@@ -240,17 +240,17 @@ jobs:
         wetrans=$(echo $wetrans | grep -o -E "https[^ ]*")
         echo "::set-env name=WETRANS::$wetrans"
         echo "Download Link: ${{ env.EMOJI }} $wetrans ${{ env.EMOJI }} 🚀"
-
+    
     - name: Create release
-      id: create_release
-      uses: actions/create-release@main
-      continue-on-error: true
+      id: release
+      uses: ncipollo/release-action@v1
       if: env.REPO_TOKEN && env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true'
-      env:
-        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
       with:
-        tag_name: x86_64_R8125B
-        release_name: ${{ env.date2 }} x86_64_R8125B ${{ env.EMOJI }}
+        name: R${{ env.DATE }} for x86_64_R8125B
+        allowUpdates: true
+        tag: x86_64_R8125B
+        commit: master
+        token: ${{ secrets.REPO_TOKEN }}
         body: |
             墙内加速下载🔥:
             
@@ -259,18 +259,7 @@ jobs:
             WeTransfer: ${{ env.WETRANS }} ${{ env.EMOJI }}
             
             ${{ env.NOTICE }}
-            
-        draft: false
-        prerelease: false
-
-    - name: Upload firmware for release
-      uses: csexton/release-asset-action@master
-      continue-on-error: true
-      if: env.REPO_TOKEN && env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true'
-      with:
-        pattern: "${{ env.FIRMWARE }}/*"
-        github-token: ${{ secrets.REPO_TOKEN }}
-        release-url: ${{ steps.create_release.outputs.upload_url }}
+        artifacts: ${{ env.FIRMWARE }}/*
 
     - name: Upload firmware for artifact
       uses: actions/upload-artifact@main
