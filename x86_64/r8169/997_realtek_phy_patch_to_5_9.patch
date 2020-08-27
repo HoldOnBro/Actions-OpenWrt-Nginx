@@ -1,0 +1,62 @@
+Add support for RTL8125B
+--- a/drivers/net/phy/realtek.c	2020-08-21 19:05:39.000000000 +0800
++++ b/drivers/net/phy/realtek.c	2020-08-13 01:08:33.037700144 +0800
+@@ -12,6 +12,15 @@
+ #include <linux/phy.h>
+ #include <linux/module.h>
+ 
++//**************************************************
++//Port from 5.8 to 5.4 by GanFan
++//**************************************************
++#include <linux/version.h>
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5,8,0)
++#include <linux/delay.h>
++#endif //#if LINUX_VERSION_CODE < KERNEL_VERSION(5,8,0)
++//**************************************************
++
+ #define RTL821x_PHYSR				0x11
+ #define RTL821x_PHYSR_DUPLEX			BIT(13)
+ #define RTL821x_PHYSR_SPEED			GENMASK(15, 14)
+@@ -53,6 +62,23 @@
+ MODULE_AUTHOR("Johnson Leung");
+ MODULE_LICENSE("GPL");
+ 
++//**************************************************
++//Port from 5.8 to 5.4 by GanFan
++//**************************************************
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5,8,0)
++static int rtlgen_resume(struct phy_device *phydev)
++{
++	int ret = genphy_resume(phydev);
++
++	/* Internal PHY's from RTL8168h up may not be instantly ready */
++	msleep(20);
++
++	return ret;
++}
++
++#endif //#if LINUX_VERSION_CODE < KERNEL_VERSION(5,8,0)
++//***************************************************
++
+ static int rtl821x_read_page(struct phy_device *phydev)
+ {
+ 	return __phy_read(phydev, RTL821x_PAGE_SELECT);
+@@ -541,6 +567,18 @@
+ 		.read_page	= rtl821x_read_page,
+ 		.write_page	= rtl821x_write_page,
+ 		.read_mmd	= rtl8125_read_mmd,
++		.write_mmd	= rtl8125_write_mmd,
++	}, {
++		PHY_ID_MATCH_EXACT(0x001cc840),
++		.name		= "RTL8125B 2.5Gbps internal",
++		.get_features	= rtl8125_get_features,
++		.config_aneg	= rtl8125_config_aneg,
++		.read_status	= rtl8125_read_status,
++		.suspend	= genphy_suspend,
++		.resume		= rtlgen_resume,
++		.read_page	= rtl821x_read_page,
++		.write_page	= rtl821x_write_page,
++		.read_mmd	= rtl8125_read_mmd,
+ 		.write_mmd	= rtl8125_write_mmd,
+ 	}, {
+ 		PHY_ID_MATCH_EXACT(0x001cc961),
