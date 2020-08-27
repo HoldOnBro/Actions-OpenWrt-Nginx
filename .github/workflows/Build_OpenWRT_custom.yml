@@ -11,7 +11,7 @@ name: Openwrt-AutoBuild
 on: 
    push:
      branches:
-       - master
+       - pull
      paths:
        - 'x86_64/custom.config'
    schedule:
