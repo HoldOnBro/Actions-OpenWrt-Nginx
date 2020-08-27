@@ -9,9 +9,11 @@
 name: Openwrt-AutoBuild
 
 on: 
-  # push: 
-  #   branches:
-  #     - master
+   push:
+     branches:
+       - master
+     paths:
+       - 'x86_64/custom.config'
    schedule:
     - cron: 0 17 * * *
   #watch:
@@ -176,6 +178,8 @@ jobs:
 
     - name: Compile the firmware
       run: |
+        mv x86_64/r8169/*.patch openwrt/target/linux/x86/patches-5.4/
+        mv x86_64/r8169/Makefile openwrt/package/firmware/linux-firmware/
         cd openwrt
         echo -e "$(($(nproc)+1)) thread compile"
         make -j$(($(nproc)+1)) || make -j1 V=s
@@ -278,9 +282,3 @@ jobs:
       if: env.SCKEY
       run: |
         [ ${{ env.status }} == 'success' ] && curl https://sc.ftqq.com/${{ secrets.SCKEY }}.send?text=🎉OpenWrt_${{ env.date3 }}_${{ env.DEVICE_NAME }}编译完成😋|| curl https://sc.ftqq.com/${{ secrets.SCKEY }}.send?text=❌OpenWrt_${{ env.date3 }}_${{ env.DEVICE_NAME }}编译失败😂
-
-    - name: Telegram notification
-      if: env.TELEGRAM_TOKEN
-      continue-on-error: true
-      run: |
-        [ ${{ env.status }} == 'success' ] && curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=🎉 OpenWrt ${{ env.date3 }} ${{ env.DEVICE_NAME }} 编译成功 😋  ${{ env.COWURL }}   ${{ env.WETRANS }} 🚀" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" || curl -k --data chat_id="${{ secrets.TELEGRAM_TO }}" --data "text=❌ OpenWrt ${{ env.date3 }} ${{ env.DEVICE_NAME }} 编译失败 😂" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage"
