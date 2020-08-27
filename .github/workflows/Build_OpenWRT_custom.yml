@@ -259,6 +259,10 @@ jobs:
             WeTransfer: ${{ env.WETRANS }} ${{ env.EMOJI }}
             
             ${{ env.NOTICE }}
+            
+            后台入口 10.0.0.1
+
+            默认密码 root
         artifacts: ${{ env.FIRMWARE }}/*
 
     - name: Upload firmware for artifact
