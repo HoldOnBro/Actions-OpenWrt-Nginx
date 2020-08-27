@@ -247,8 +247,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
       with:
-        tag_name: ${{ env.date }}_${{ env.DEVICE_NAME }}
-        release_name: ${{ env.date2 }} ${{ env.DEVICE_NAME }} ${{ env.EMOJI }}
+        tag_name: x86_64_R8125B
+        release_name: ${{ env.date2 }} x86_64_R8125B ${{ env.EMOJI }}
         body: |
             墙内加速下载🔥:
             
