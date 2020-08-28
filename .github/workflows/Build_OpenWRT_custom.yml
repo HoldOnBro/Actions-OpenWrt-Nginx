@@ -72,8 +72,8 @@ jobs:
     - name: Get current date
       id: date
       run: |
-        echo "::set-env name=date::$(date +'%m/%d_%Y_%H/%M')"
-        echo "::set-env name=date2::$(date +'%m/%d %Y')"
+        echo "::set-env name=date::$(date +'%Y.%m.%d_%H:%M')"
+        echo "::set-env name=date2::$(date +'%Y.%m.%d')"
         echo "::set-env name=date3::$(date +'%m.%d')"
 
     - name: Clone source code
