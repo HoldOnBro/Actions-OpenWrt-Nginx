@@ -178,6 +178,9 @@ jobs:
 
     - name: Compile the firmware
       run: |
+        cp common/custom/package/base-files/files/etc/banner openwrt/package/base-files/files/etc/
+        chmod +x common/custom/diy.sh
+        /bin/bash common/custom/diy.sh
         mv x86_64/r8169/*.patch openwrt/target/linux/x86/patches-5.4/
         mv x86_64/r8169/Makefile openwrt/package/firmware/linux-firmware/
         rm openwrt/.config
