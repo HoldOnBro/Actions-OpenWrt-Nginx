@@ -248,7 +248,7 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.REPO_TOKEN && env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true'
       with:
-        name: R${{ env.date }} for x86_64_R8125B ${{ env.EMOJI }}
+        name: ${{ env.date }} for x86_64_R8125B ${{ env.EMOJI }}
         allowUpdates: true
         tag: x86_64_R8125B
         commit: master
