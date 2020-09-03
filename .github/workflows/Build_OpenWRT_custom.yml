@@ -16,8 +16,8 @@ on:
        - 'x86_64/custom.config'
    schedule:
     - cron: 0 17 * * *
-  #watch:
-  #  types: started
+   watch:
+    types: started
 
 env:
   REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
