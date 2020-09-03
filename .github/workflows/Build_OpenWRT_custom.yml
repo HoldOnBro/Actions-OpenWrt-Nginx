@@ -266,14 +266,6 @@ jobs:
 
             默认密码 root
         artifacts: ${{ env.FIRMWARE }}/*
-
-    - name: Upload firmware for artifact
-      uses: actions/upload-artifact@main
-      continue-on-error: true
-      if: env.UPLOAD_FIRMWARE_FOR_ARTIFACT == 'true'
-      with:
-        name: ${{ env.date3 }} ${{ env.DEVICE_NAME }}
-        path: ${{ env.FIRMWARE }}
         
     - name: WeChat notification
       if: env.SCKEY
