@@ -93,7 +93,7 @@ diy云编译教程: [Read the details in my blog (in Chinese) | 中文教程](ht
 
 2. 命令行输入 `sudo apt-get update` ，然后输入
 `
-sudo apt-get -y install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python2.7 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler ccache xsltproc rename antlr3 gperf curl
+sudo apt-get -y install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3 python2.7 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler ccache xsltproc rename antlr3 gperf curl
 `
 
 3. 首次编译执行脚本(以x64为例):
@@ -160,13 +160,13 @@ make defconfig
 rm -Rf Actions-OpenWrt && git clone https://github.com/garypang13/Actions-OpenWrt
 cp -Rf Actions-OpenWrt/* openwrt/
 cd openwrt
-rm -Rf feeds package/feeds tmp
+rm -Rf feeds package/feeds files tmp
 [ -f ".config" ] && mv .config .config.bak
 git fetch --all
 git reset --hard origin/master
 ./scripts/feeds update -a
 if [ -n "$(ls -A "common/files" 2>/dev/null)" ]; then
-	cp -rf common/files files
+	cp -rf common/files/* files/
 fi
 if [ -n "$(ls -A "x86_64/files" 2>/dev/null)" ]; then
 	cp -rf x86_64/files/* files/

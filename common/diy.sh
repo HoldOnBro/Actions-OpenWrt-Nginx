@@ -57,6 +57,7 @@ cd -
 mv -f feeds/packages/libs/libx264 feeds/custom/luci/libx264
 mv -f feeds/packages/net/aria2 feeds/custom/luci/aria2
 mv -f feeds/packages/admin/netdata feeds/custom/luci/netdata
+mv -f feeds/packages/net/smartdns feeds/custom/luci/smartdns
 rm -Rf feeds/packages/net/miniupnpd
 
 echo -e "\q" | svn co https://github.com/xiaorouji/openwrt-package/trunk/lienol feeds/custom/luci
@@ -110,7 +111,6 @@ sed -i '$a /www/speedtest/results/telemetry_settings.php' package/base-files/fil
 sed -i '$a /etc/php7/custom.ini' package/base-files/files/lib/upgrade/keep.d/base-files-essential
 # find target/linux/x86 -name "config*" -exec bash -c 'cat kernel.conf >> "{}"' \;
 sed -i '$a CONFIG_ACPI=y\nCONFIG_X86_ACPI_CPUFREQ=y\nCONFIG_CPU_FREQ_GOV_CONSERVATIVE=y\nCONFIG_CPU_FREQ_GOV_POWERSAVE=y\nCONFIG_CPU_FREQ_GOV_USERSPACE=y\nCONFIG_NR_CPUS=128' target/linux/*/config-*
-sed -i '/continue$/d' package/*/*/luci-app-ssr-plus/root/usr/bin/ssr-switch
 sed -i 's/if test_proxy/sleep 3600\nif test_proxy/g' package/*/*/luci-app-ssr-plus/root/usr/bin/ssr-switch
 sed -i 's/ uci.cursor/ luci.model.uci.cursor/g' package/*/*/luci-app-ssr-plus/root/usr/share/shadowsocksr/subscribe.lua
 sed -i 's/service_start $PROG/service_start $PROG -R/g' package/*/*/php7/files/php7-fpm.init
