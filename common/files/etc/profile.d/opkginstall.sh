@@ -18,21 +18,17 @@ sed -i 's/\"services\"/\"nas\"/g' /usr/lib/lua/luci/controller/minidlna.lua
 sed -i 's/\"services\"/\"nas\"/g' /usr/lib/lua/luci/controller/transmission.lua
 sed -i 's/entry({"admin", "nas", "aria2"}/entry({"admin", "nas"}, firstchild(), _("NAS"), 45).dependent = false\nentry({"admin", "nas", "aria2"}/g' /usr/lib/lua/luci/controller/aria2.lua
 sed -i 's/local page = entry/entry({"admin", "nas"}, firstchild(), _("NAS"), 45).dependent = false\nlocal page = entry/g' /usr/lib/lua/luci/controller/transmission.lua
+sed -i 's/page = entry/entry({"admin", "nas"}, firstchild(), _("NAS"), 45).dependent = false\npage = entry/g' /usr/lib/lua/luci/controller/hd_idle.lua
 sed -i 's/entry/entry({"admin", "nas"}, firstchild(), _("NAS"), 45).dependent = false\nentry/g' /usr/lib/lua/luci/controller/ksmbd.lua
 sed -i 's/\"services\"/\"nas\"/g' /usr/lib/lua/luci/controller/mjpg-streamer.lua
 sed -i 's/services/nas/g'  /usr/lib/lua/luci/view/minidlna_status.htm
-  }
 
-
-sleep 2
-	[[ ! `pgrep UnblockNeteaseMusic` && `uci get unblockmusic.@unblockmusic[0].enabled` == 1 ]] && {
+	[[ ! "`pgrep UnblockNeteaseMusic`" && "`uci get unblockmusic.@unblockmusic[0].enabled`" == 1 ]] && {
 	/etc/init.d/unblockmusic restart
-	}
-	[[ ! `pgrep rclone` && `uci get rclone.global.enabled` == 1 ]] && {
-	/etc/init.d/rclone restart
 	}
 	rm -Rf /tmp/luci-modulecache /tmp/luci-indexcache
     else
         command opkg $@
     fi
+    rm -f /var/lock/opkg.lock
 }
