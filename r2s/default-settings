@@ -4,7 +4,7 @@
 
 touch /etc/config/placeholder
 
-sed -i '$a src/gz openwrt_custom https://op.supes.top/packages/x64' /etc/opkg/customfeeds.conf
+sed -i '$a src/gz openwrt_custom https://op.supes.top/packages/aarch64' /etc/opkg/customfeeds.conf
 
 #HW-RNG
 uci set system.@rngd[0].enabled="1"

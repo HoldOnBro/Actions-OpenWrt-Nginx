@@ -52,9 +52,11 @@ echo "
 
 3. RedMi_AC2100
 
-4. 自定义
+4. r2s
 
-5. Exit
+5. 自定义
+
+6. Exit
 
 "
 
@@ -76,11 +78,15 @@ case $CHOOSE in
 	break
 	;;
 	4)
+		firmware="r2s"
+	break
+	;;
+	5)
 		firmware="other"
 		make menuconfig
 	break
 	;;
-	5)	exit 0
+	6)	exit 0
 	;;
 
 esac
@@ -135,10 +141,10 @@ if [ -n "$(ls -A "$firmware/diy" 2>/dev/null)" ]; then
 	cp -Rf $firmware/diy/* ./
 fi
 if [ -n "$(ls -A "common/patches" 2>/dev/null)" ]; then
-          find "common/patches" -type f -name '*.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -p0 --forward"
+          find "common/patches" -type f -name '*.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -Rp1 --forward"
 fi
 if [ -n "$(ls -A "$firmware/patches" 2>/dev/null)" ]; then
-          find "$firmware/patches" -type f -name '*.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -p0 --forward"
+          find "$firmware/patches" -type f -name '*.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -Rp1 --forward"
 fi
 cp $firmware/.config .config
 make menuconfig

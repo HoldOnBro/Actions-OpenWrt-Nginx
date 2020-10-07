@@ -68,6 +68,7 @@ jobs:
         echo "::set-env name=date::$(date +'%m/%d_%Y_%H/%M')"
         echo "::set-env name=date2::$(date +'%m/%d %Y')"
         echo "::set-env name=date3::$(date +'%m.%d')"
+        echo "::set-env name=date4::$(date +'%m.%d.%Y')"
 
     - name: Clone source code
       run: |
@@ -130,17 +131,18 @@ jobs:
         fi
         if [ -n "$(ls -A "common/patches" 2>/dev/null)" ]; then
         (
-          find "common/patches" -type f -name '*.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -p0 --forward" || true
+          find "common/patches" -type f -name '*.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -p1 --forward"
         )
         fi
         if [ -n "$(ls -A "${{matrix.target}}/patches" 2>/dev/null)" ]; then
         (
-          find "${{matrix.target}}/patches" -type f -name '*.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -p0 --forward" || true
+          find "${{matrix.target}}/patches" -type f -name '*.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -p1 --forward"
         )
         fi
         make defconfig
         [ $(grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/') == generic ] && DEVICE_NAME=$(grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/CONFIG_TARGET_(.*)_DEVICE_.*=y/\1/') || DEVICE_NAME=$(grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/')
         DEVICE_NAME=`echo ${DEVICE_NAME/xiaomi_redmi-router/redmi}`
+        DEVICE_NAME=`echo ${DEVICE_NAME/friendlyarm_nanopi-r2s/nanopi-r2s}`
         echo "::set-env name=DEVICE_NAME::$DEVICE_NAME"
         
     - name: Default PPPOE Setting
@@ -179,17 +181,18 @@ jobs:
     - name: Organize files
       id: organize
       run: |
-        mkdir firmware && find openwrt/bin/*/*/*/ -maxdepth 1 \
+        mkdir firmware && find openwrt/bin/targets/*/*/ -maxdepth 1 \
         -name "*combined*" \
-        -or -name "*sysupgrade.bin" \
+        -or -name "*sysupgrade*" \
         -or -name "sha256sums" \
         | xargs -i mv -f {} ./firmware/
         cp openwrt/.config  ./firmware/${{matrix.target}}.config
         cd firmware
+        echo ${{ env.date4 }} > version.txt
         mv sha256sums ${{matrix.target}}_sha256sums
-        rename -v "s/^openwrt/${{ env.date3 }}-openwrt/" *combined*
+        rename -v "s/^openwrt/${{ env.date3 }}-openwrt/" *squashfs*
         rename -v "s/xiaomi_redmi-router/redmi/" *bin
-        rename -v "s/^openwrt/${{ env.date3 }}-openwrt/" *bin
+        rename -v "s/friendlyarm_nanopi-r2s/nanopi-r2s/" *gz
         echo "::set-env name=FIRMWARE::$PWD"
         Emoji=("🎉" "🤞" "✨" "🎁" "🎈" "🎄" "🎨" "💋" "🍓" "🍕" "🍉" "💐" "🌴" "🚀" "🛸" "🗽" "⛅" "🌈" "🔥" "⛄" "🐶" "🏅" "🦄" "🐤")
         RANDOM=$$$(date +%s)
@@ -219,7 +222,7 @@ jobs:
       if: env.SSH_PRIVATE_KEY
       with:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        ARGS: "-avzr"
+        ARGS: "-avzr --exclude=${{matrix.target}}.config"
         SOURCE: firmware/
         REMOTE_HOST: op.supes.top
         REMOTE_USER: root
@@ -285,4 +288,4 @@ jobs:
       if: env.TELEGRAM_TOKEN && ! contains(github.event.action, 'notg')
       continue-on-error: true
       run: |
-        [ ${{ env.status }} == 'success' ] && curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=🎉 OpenWrt ${{ env.date3 }} ${{ env.DEVICE_NAME }} 编译成功 😋  https://op.supes.top/firmware/${{ env.DEVICE_NAME }}/  ${{ env.COWURL }}   ${{ env.WETRANS }} 🚀" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" || curl -k --data chat_id="${{ secrets.TELEGRAM_TO }}" --data "text=❌ OpenWrt ${{ env.date3 }} ${{ env.DEVICE_NAME }} 编译失败 😂" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage"
+        # [ ${{ env.status }} == 'success' ] && curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=🎉 OpenWrt ${{ env.date3 }} ${{ env.DEVICE_NAME }} 编译成功 😋  https://op.supes.top/firmware/${{ env.DEVICE_NAME }}/  ${{ env.COWURL }}   ${{ env.WETRANS }} 🚀" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" || curl -k --data chat_id="${{ secrets.TELEGRAM_TO }}" --data "text=❌ OpenWrt ${{ env.date3 }} ${{ env.DEVICE_NAME }} 编译失败 😂" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage"
