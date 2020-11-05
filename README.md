@@ -34,7 +34,7 @@
 
 + uhttpd替换为nginx,大大增加可玩性,比如建站,文件服务器,Webdav,反向代理,端口复用...
 
-+ 内置AdguardHome搭配SmartDNS综合优化方案, 开箱即用,实现恶意网站过滤+区分国内外域名解析加速+ 防污染+ DNS优选 (需在后台安装luci-app-adguardhome和luci-app-smartdns,K2P只需安装luci-app-smartdns)
++ 内置DNS综合优化方案, 开箱即用,实现广告过滤 +国内外域名解析加速+ 防污染.
 
 + 无需专业知识,无需linux服务器,人人皆可通过云编译定制编译自己的专属固件.
 
@@ -68,6 +68,7 @@ diy云编译教程: [Read the details in my blog (in Chinese) | 中文教程](ht
 
 + Opkg 软件包管理
 + SSR-PLUS
++ Adblock 基于DNS的广告过滤
 + UPNP 自动端口转发
 + Turbo ACC 网络加速
 
@@ -127,6 +128,7 @@ Build OpenWrt using GitHub Actions
 ![](https://github.com/garypang13/luci-theme-edge/raw/master/Screenshots/1.png)
 ![](https://github.com/garypang13/luci-theme-edge/raw/master/Screenshots/2.png)
 ![](https://github.com/garypang13/luci-theme-edge/raw/master/Screenshots/3.png)
+![](https://github.com/garypang13/luci-theme-edge/raw/master/Screenshots/8.png)
 ![](https://github.com/garypang13/luci-theme-edge/raw/master/Screenshots/4.png)
 ![](https://github.com/garypang13/luci-theme-edge/raw/master/Screenshots/5.png)
 <br/>
